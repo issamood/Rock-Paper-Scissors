@@ -1,9 +1,12 @@
+let playerScore = 0;
+let computerScore = 0;
+
 //Function generates a decision for computer randomly
 function getComputerChoice() {
 
     //Getting a random value from 0-2
     var randomizer = Math.floor(Math.random() * 3);
-    var choice
+    var choice = ""
 
     //Setting decisions based upon number chosen from 0-2
     if (randomizer === 0){
@@ -31,9 +34,11 @@ function startRound(playerSelection, computerSelection) {
     //Compares decisions if player chose rock
     else if(playerSelection === "rock"){
         if (computerSelection === "paper"){
+            computerScore++
             return `${playerSelection} vs. ${computerSelection} Computer wins!`
         }
         else{
+            playerScore++
             return `${playerSelection} vs. ${computerSelection} You win!`
         }
     }
@@ -41,9 +46,11 @@ function startRound(playerSelection, computerSelection) {
     //Compares decisions if player chose paper
     else if (playerSelection === "paper"){
         if (computerSelection === "rock") {
+            playerScore++
             return `${playerSelection} vs. ${computerSelection} You win!`
         }
         else {
+            computerScore++
             return `${playerSelection} vs. ${computerSelection} Computer wins!`
         }
     }
@@ -51,76 +58,70 @@ function startRound(playerSelection, computerSelection) {
     //Compares decisions if player chose scissor
     else {
         if (computerSelection === "rock") {
+            computerScore++
             return `${playerSelection} vs. ${computerSelection} Computer wins!`
         }
         else {
+            playerScore++
             return `${playerSelection} vs. ${computerSelection} You win!`
         }
     }
 }   
 
-//this function plays a 5 round bout of rock paper scissors
-function game() {
-    var playerScore = 0;
-    var computerScore = 0;
-    var playerChoice = ""
-    var inputCheck = false;
-    var result = ""
+//on click, startRound
+//get which button was clicked
+// input userChoice into startRound function
 
-    //for loop for 5 rounds of rock, paper, scissors
-    for (var i = 1; i <= 5; i++){
-        //While loop until user puts in a valid answer
-        while (inputCheck === false) {
-            var playerInput = prompt("Please enter rock paper or scissor: ")
-            playerChoice = playerInput.toLowerCase()
-            /*Match method returns an array, which makes things
-            a bit complicated for me. However it returns a null, if it
-            doesn't find a match, so then I just check rock, paper, 
-            or scissor exists in the inputted string from the user, 
-            if so assign the appropriate value, if not, we prompt the user again
-            */
-            if (playerChoice.match("rock") !== null){
-            playerChoice = "rock";
-            inputCheck = true;
-            }
-            else if (playerChoice.match("paper") !== null) {
-                playerChoice = "paper";
-                inputCheck = true;
-            }
-            else if (playerChoice.match("scissor") !== null) {
-                playerChoice = "scissor"
-                inputCheck = true;
-            }
-            else {
-                console.log("Invalid input, please try again.")
-            }
-        }
+const rock = document.querySelector('.rockbtn'); //selecting which element to be affected and assigning it to a variable to keep it simple
+const paper = document.querySelector('.paperbtn');
+const scissor = document.querySelector('.scissorbtn');
 
-        //Calculate result
-        result = startRound(playerChoice, getComputerChoice())
-        //I chose 'you' as the keyword to find in the returned string to see if the user won or not.
-        if (result.match("You") !== null){
-            console.log(result)
-            playerScore++
-        }
-        else{
-            console.log(result)
-            computerScore++
-        }
-        inputCheck = false
-        playerChoice = ""
-    }
+rock.addEventListener('click', function(e){
+    console.log(startRound('rock',getComputerChoice()));
+    updateScore()
+    checkWinner()
+})
+paper.addEventListener('click', function(e){
+    console.log(startRound('paper',getComputerChoice()));
+    updateScore()
+    checkWinner()
+})
+scissor.addEventListener('click', function(e){
+    console.log(startRound('scissor',getComputerChoice()));
+    updateScore()
+    checkWinner()
+})
 
-    //Checks and prints final score
-    if (playerScore === computerScore){
-        console.log(`The final score is ${playerScore} to ${computerScore}. It's a draw!`)
-    } 
-    else if (playerScore > computerScore){
-        console.log(`The final score is ${playerScore} to ${computerScore}. You win the game!`)
-    }
-    else {
-        console.log(`The final score is ${playerScore} to ${computerScore}. Computer wins the game!`)
-    }
+function updateScore(){
+    let playerScoreRecord = document.querySelector('#playerScore');
+    let computerScoreRecord = document.querySelector('#computerScore');
+    playerScoreRecord.textContent = `Player Score: ${playerScore}`
+    computerScoreRecord.textContent = `Computer Score: ${computerScore}`
 }
 
-game()
+function checkWinner() {
+    const result = document.querySelector('.result')
+    let resetResult = false;
+
+    if (playerScore === 5) {
+        result.textContent = 'Player wins first to five!';
+        playerScore = 0;
+        computerScore = 0;
+        document.querySelector('#playerScore').textContent = 'Player Score: 0';
+        document.querySelector('#computerScore').textContent = 'Computer Score: 0';
+        resetResult = true;
+    }
+    else if(computerScore === 5) {
+        result.textContent = 'Computer wins first to five!';
+        playerScore = 0;
+        computerScore = 0;
+        document.querySelector('#playerScore').textContent = 'Player Score: 0';
+        document.querySelector('#computerScore').textContent = 'Computer Score: 0';
+        resetResult;
+    }
+
+    if (resetResult === true) {
+        reset.textContent = ""
+        resetResult = false;
+    }
+}
